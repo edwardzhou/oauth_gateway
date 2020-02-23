@@ -13,6 +13,8 @@ defmodule OauthGateway.Factories.UserFactory do
               :phone,
               &~s(199#{&1 |> Integer.to_string() |> String.pad_leading(8, "0")})
             ),
+          first_name: "三",
+          last_name: "张",
           avatar_url: "https://upload.jianshu.io/users/upload_avatars/4753959/89a67f5a-ad18-45e4-b19e-dc34e502d658.png?imageMogr2/auto-orient/strip|imageView2/1/w/240/h/240",
         }
       end
