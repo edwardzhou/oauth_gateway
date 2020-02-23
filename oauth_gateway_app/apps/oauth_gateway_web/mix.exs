@@ -49,6 +49,8 @@ defmodule OauthGatewayWeb.MixProject do
       {:ueberauth, "~> 0.6"},
       {:ueberauth_github_ez, "~> 0.7.2"},
       {:ueberauth_feishu, "~> 0.0.2"},
+      {:tesla, "~> 1.3.0"},
+      {:hackney, "~> 1.15.2"},
     ]
   end
 

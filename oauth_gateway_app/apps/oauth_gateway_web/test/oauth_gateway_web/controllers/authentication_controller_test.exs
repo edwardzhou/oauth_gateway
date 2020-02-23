@@ -126,7 +126,7 @@ defmodule OauthGatewayWeb.AuthenticationControllerTest do
 
       assert html_response(conn, 302)
       assert conn.assigns[:current_user] != nil
-      assert get_session(conn, :current_user).id == existing_user.id
+      assert conn.assigns[:current_user].id == existing_user.id
     end
   end
 end

@@ -6,6 +6,8 @@ defmodule OauthGateway.Accounts.Authentication do
 
   @primary_key {:id, :binary_id, autogenerate: true}
   @foreign_key_type :binary_id
+  @derive {Jason.Encoder,
+           except: [:__meta__, :user]}
   schema "authentications" do
     field :email, :string
     field :first_name, :string

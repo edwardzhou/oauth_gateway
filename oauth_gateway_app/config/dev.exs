@@ -2,10 +2,11 @@ use Mix.Config
 
 # Configure your database
 config :oauth_gateway, OauthGateway.Repo,
-  username: "postgres",
-  password: "postgres",
-  database: "oauth_gateway_dev",
-  hostname: "localhost",
+  hostname: System.get_env("OAUTH_DB_HOST") || "localhost",
+  username: System.get_env("OAUTH_DB_USER") || "postgres",
+  password: System.get_env("OAUTH_DB_PASSWORD") || "postgres",
+  database: System.get_env("OAUTH_DB_NAME") || "oauth_gateway_dev",
+  port: System.get_env("OAUTH_DB_PORT") || 5432,
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 

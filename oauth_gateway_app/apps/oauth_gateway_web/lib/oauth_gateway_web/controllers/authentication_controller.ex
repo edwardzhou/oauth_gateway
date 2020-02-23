@@ -2,9 +2,12 @@ defmodule OauthGatewayWeb.AuthenticationController do
   use OauthGatewayWeb, :controller
   alias OauthGateway.Authenticator
 
+  def remote_authenticator() do
+    Application.get_env(:oauth_gateway_web, :remote_authenticator) || OauthGatewayWeb.LeangooAuth
+  end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-    {:ok, _, user} =
+    {:ok, authentication, user} =
       auth
       # |> IO.inspect(label: "[OauthGatewayWeb.AuthenticationController] callback auth", pretty: true)
       |> auth_params()
@@ -12,10 +15,8 @@ defmodule OauthGatewayWeb.AuthenticationController do
       |> Authenticator.authenticate()
 
     conn
-    |> put_flash(:info, "Successfully authenticated.")
-    |> put_session(:current_user, user)
     |> assign(:current_user, user)
-    |> handle_response(auth, user, params)
+    |> forward_authentication(authentication, auth, params)
   end
 
   def callback(%{assigns: %{} = auth} = conn, params) do
@@ -27,13 +28,18 @@ defmodule OauthGatewayWeb.AuthenticationController do
     |> handle_failure(auth, params)
   end
 
-  def delete(conn, params) do
-    url = params["state"]
+  def forward_authentication(conn, authentication, auth, params) do
+    {:ok, response} = remote_authenticator().user_auth(
+      %{
+        provider: auth.provider,
+        authentication: authentication,
+        params: params
+      }
+    )
+    |> IO.inspect(label: "leangooAuth response ", pretty: true)
+
     conn
-    |> put_flash(:info, "You have been logged out.")
-    |> configure_session(drop: true)
-    # |> redirect(to: "/")
-    |> redirect(external: url)
+    |> handle_response(response)
   end
 
   def handle_failure(conn, auth, _) do
@@ -41,13 +47,17 @@ defmodule OauthGatewayWeb.AuthenticationController do
     |> json(auth[:errors])
   end
 
-  def handle_response(conn, _, user, params) do
-    # {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
-    state = params["state"]
-    url = "#{state}?token=token_abc"
-    # IO.inspect(url,label: "url>>>>", pretty: true)
+  # def handle_response(conn, _, user, params) do
+  #   # {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
+  #   state = params["state"]
+  #   url = "#{state}?token=token_abc"
+  #   conn
+  #   |> redirect(external: url)
+  # end
+
+  def handle_response(conn, %{body: resp_body}) do
     conn
-    |> redirect(external: url)
+    |> redirect(external: resp_body["url"])
   end
 
   def auth_params(%{provider: :github} = auth) do
