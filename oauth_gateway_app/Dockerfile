@@ -1,4 +1,4 @@
-FROM elixir:1.9.4-alpine as base_image
+FROM elixir:1.10.1-alpine as base_image
 RUN mkdir /app
 WORKDIR /app
 ENV LC_ALL=zh_CN.UTF-8

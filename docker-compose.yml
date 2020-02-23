@@ -2,9 +2,9 @@ version: '3.5'
 
 networks:
   oauth-network:
-  oauth-network-group:
-    external: true
-    name: ${OAUTH_NETWORK_GROUP}
+  # oauth-network-group:
+  #   external: true
+  #   name: ${OAUTH_NETWORK_GROUP}
 volumes: 
   pgdata_12:
 
@@ -22,7 +22,7 @@ services:
       - "${PG_PORT}"
     networks:
       - "oauth-network"
-      - "oauth-network-group"
+      # - "oauth-network-group"
     deploy:
       replicas: ${PGSQL_REPLICAS}
       placement:
@@ -34,9 +34,8 @@ services:
   oauth-app:
     depends_on:
       - pgsql
-      # - aim-nginx
     build:
-      context: ./oauth-gateway-app
+      context: ./oauth_gateway_app
       args:
         - MIX_ENV=${MIX_ENV}
         - HTTP_SCHEME=${HTTP_SCHEME}
@@ -56,7 +55,7 @@ services:
       - "127.0.0.1:14100:14100"
     networks:
       - "oauth-network"
-      - "oauth-network-group"
+      # - "oauth-network-group"
     deploy:
       replicas: ${APP_REPLICAS}
       restart_policy:

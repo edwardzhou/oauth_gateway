@@ -14,5 +14,8 @@ config :oauth_gateway_web, OauthGatewayWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+# config :oauth_gateway_web, remote_authenticator: OauthGatewayWeb.LeangooAuthMock
+
+
 # Print only warnings and errors during test
 config :logger, level: :warn
