@@ -39,7 +39,8 @@ defmodule OauthGateway.MixProject do
       {:ecto_sql, "~> 3.1"},
       {:postgrex, ">= 0.0.0"},
       {:jason, "~> 1.0"},
-      {:elixir_uuid, "~> 1.2"}
+      {:elixir_uuid, "~> 1.2"},
+      {:ex_machina, "~> 2.3"},
     ]
   end
 
