@@ -3,8 +3,10 @@ defmodule OauthGateway.ModelFactory do
 
   alias OauthGateway.Accounts.{Users, Authentications}
   alias OauthGateway.Repo
+  alias OauthGateway.Factories
 
-  use OauthGateway.Factories.UserFactory
+  use Factories.UserFactory
+  use Factories.AuthenticationFactory
 
   def clear_database("true") do
     Repo.delete_all(Authentications)
