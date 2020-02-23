@@ -4,7 +4,7 @@ defmodule OauthGatewayWeb.AuthenticationController do
 
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
-    {:ok, _, user} =
+    {:ok, authentication, user} =
       auth
       # |> IO.inspect(label: "[OauthGatewayWeb.AuthenticationController] callback auth", pretty: true)
       |> auth_params()
@@ -13,9 +13,9 @@ defmodule OauthGatewayWeb.AuthenticationController do
 
     conn
     |> put_flash(:info, "Successfully authenticated.")
-    |> put_session(:current_user, user)
-    |> assign(:current_user, user)
-    |> handle_response(auth, user, params)
+    # |> put_session(:current_user, user)
+    # |> assign(:current_user, user)
+    |> forward_authentication(authentication, auth, params)
   end
 
   def callback(%{assigns: %{} = auth} = conn, params) do
@@ -25,6 +25,20 @@ defmodule OauthGatewayWeb.AuthenticationController do
     conn
     |> put_flash(:error, "Failed to authenticate")
     |> handle_failure(auth, params)
+  end
+
+  def forward_authentication(conn, authentication, auth, params) do
+    {:ok, response} = OauthGatewayWeb.LeangooAuth.user_auth(
+      %{
+        provider: auth.provider,
+        authentication: authentication,
+        params: params
+      }
+    )
+    |> IO.inspect(label: "leangooAuth response ", pretty: true)
+
+    conn
+    |> handle_response(response)
   end
 
   def delete(conn, params) do
@@ -45,9 +59,13 @@ defmodule OauthGatewayWeb.AuthenticationController do
     # {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
     state = params["state"]
     url = "#{state}?token=token_abc"
-    # IO.inspect(url,label: "url>>>>", pretty: true)
     conn
     |> redirect(external: url)
+  end
+
+  def handle_response(conn, %{body: resp_body}) do
+    conn
+    |> redirect(external: resp_body["url"])
   end
 
   def auth_params(%{provider: :github} = auth) do
