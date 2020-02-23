@@ -45,7 +45,10 @@ defmodule OauthGatewayWeb.MixProject do
       {:gettext, "~> 0.11"},
       {:oauth_gateway, in_umbrella: true},
       {:jason, "~> 1.0"},
-      {:plug_cowboy, "~> 2.0"}
+      {:plug_cowboy, "~> 2.0"},
+      {:ueberauth, "~> 0.6"},
+      {:ueberauth_github_ez, "~> 0.7.2"},
+      {:ueberauth_feishu, "~> 0.0.2"},
     ]
   end
 
