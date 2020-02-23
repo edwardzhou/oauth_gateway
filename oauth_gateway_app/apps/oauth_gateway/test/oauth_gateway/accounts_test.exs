@@ -111,6 +111,9 @@ defmodule OauthGateway.AccountsTest do
   describe "authentications" do
     alias OauthGateway.Accounts.Authentication
 
+    @new_user_id UUID.uuid4()
+    @updated_user_id UUID.uuid4()
+
     @valid_attrs %{
       email: "some email",
       first_name: "some first_name",
@@ -126,7 +129,7 @@ defmodule OauthGateway.AccountsTest do
       token_secret: "some token_secret",
       uid: "some uid",
       union_id: "some union_id",
-      user_id: "some user_id"
+      user_id: @new_user_id
     }
     @update_attrs %{
       email: "some updated email",
@@ -143,7 +146,7 @@ defmodule OauthGateway.AccountsTest do
       token_secret: "some updated token_secret",
       uid: "some updated uid",
       union_id: "some updated union_id",
-      user_id: "some updated user_id"
+      user_id: @updated_user_id
     }
     @invalid_attrs %{
       email: nil,
@@ -200,7 +203,7 @@ defmodule OauthGateway.AccountsTest do
       assert authentication.token_secret == "some token_secret"
       assert authentication.uid == "some uid"
       assert authentication.union_id == "some union_id"
-      assert authentication.user_id == "some user_id"
+      assert authentication.user_id == @new_user_id
     end
 
     test "create_authentication/1 with invalid data returns error changeset" do
@@ -227,7 +230,7 @@ defmodule OauthGateway.AccountsTest do
       assert authentication.token_secret == "some updated token_secret"
       assert authentication.uid == "some updated uid"
       assert authentication.union_id == "some updated union_id"
-      assert authentication.user_id == "some updated user_id"
+      assert authentication.user_id == @updated_user_id
     end
 
     test "update_authentication/2 with invalid data returns error changeset" do
