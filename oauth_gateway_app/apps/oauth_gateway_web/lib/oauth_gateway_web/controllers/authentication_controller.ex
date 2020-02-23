@@ -12,9 +12,6 @@ defmodule OauthGatewayWeb.AuthenticationController do
       |> Authenticator.authenticate()
 
     conn
-    |> put_flash(:info, "Successfully authenticated.")
-    # |> put_session(:current_user, user)
-    # |> assign(:current_user, user)
     |> forward_authentication(authentication, auth, params)
   end
 
@@ -41,27 +38,18 @@ defmodule OauthGatewayWeb.AuthenticationController do
     |> handle_response(response)
   end
 
-  def delete(conn, params) do
-    url = params["state"]
-    conn
-    |> put_flash(:info, "You have been logged out.")
-    |> configure_session(drop: true)
-    # |> redirect(to: "/")
-    |> redirect(external: url)
-  end
-
   def handle_failure(conn, auth, _) do
     conn
     |> json(auth[:errors])
   end
 
-  def handle_response(conn, _, user, params) do
-    # {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
-    state = params["state"]
-    url = "#{state}?token=token_abc"
-    conn
-    |> redirect(external: url)
-  end
+  # def handle_response(conn, _, user, params) do
+  #   # {:ok, token, _full_claims} = Guardian.encode_and_sign(user)
+  #   state = params["state"]
+  #   url = "#{state}?token=token_abc"
+  #   conn
+  #   |> redirect(external: url)
+  # end
 
   def handle_response(conn, %{body: resp_body}) do
     conn

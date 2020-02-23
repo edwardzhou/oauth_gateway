@@ -26,7 +26,6 @@ defmodule OauthGatewayWeb.Router do
   scope "/auth", OauthGatewayWeb do
     pipe_through [:browser, :ueberauth]
 
-    get "/logout", AuthenticationController, :delete, as: :auth
     get "/:provider", AuthenticationController, :request, as: :auth
     get "/:provider/callback", AuthenticationController, :callback, as: :auth
     post "/:provider/callback", AuthenticationController, :callback, as: :auth
