@@ -1,0 +1,66 @@
+version: '3.5'
+
+networks:
+  oauth-network:
+  oauth-network-group:
+    external: true
+    name: ${OAUTH_NETWORK_GROUP}
+volumes: 
+  pgdata_12:
+
+services:
+  pgsql:
+    build:
+      context: ./pgsql
+      dockerfile: Dockerfile
+    image: "${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT}/${ENV}/oauth-pgsql"
+    env_file:
+      - .env
+    restart: always
+    tty: true
+    ports:
+      - "${PG_PORT}"
+    networks:
+      - "oauth-network"
+      - "oauth-network-group"
+    deploy:
+      replicas: ${PGSQL_REPLICAS}
+      placement:
+        constraints:
+          - ${PLACEMENT_CONSTRAINT}
+    volumes: [$PGDATA_VOLUME]
+      # - /var/lib/pgdata_10:/var/lib/postgresql/data
+
+  oauth-app:
+    depends_on:
+      - pgsql
+      # - aim-nginx
+    build:
+      context: ./oauth-gateway-app
+      args:
+        - MIX_ENV=${MIX_ENV}
+        - HTTP_SCHEME=${HTTP_SCHEME}
+        - HTTP_HOST=${HTTP_HOST}
+        - HTTP_PORT=${HTTP_PORT}
+        - HTTP_PATH=${HTTP_PATH}
+        - FEISHU_CLIENT_ID=${FEISHU_CLIENT_ID}
+        - FEISHU_CLIENT_SECRET=${FEISHU_CLIENT_SECRET}
+      dockerfile: Dockerfile #dockerfile.build
+    image: "${DOCKER_REGISTRY_URL}/${DOCKER_PROJECT}/${ENV}/oauth-app"
+    env_file:
+      - .env
+    restart: always
+    tty: true
+    ports: 
+      - "127.0.0.1:4000:4000"
+      - "127.0.0.1:14100:14100"
+    networks:
+      - "oauth-network"
+      - "oauth-network-group"
+    deploy:
+      replicas: ${APP_REPLICAS}
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints:
+          - ${PLACEMENT_CONSTRAINT}
