@@ -2,6 +2,9 @@ defmodule OauthGatewayWeb.AuthenticationController do
   use OauthGatewayWeb, :controller
   alias OauthGateway.Authenticator
 
+  def remote_authenticator() do
+    Application.get_env(:oauth_gateway_web, :remote_authenticator) || OauthGatewayWeb.LeangooAuth
+  end
 
   def callback(%{assigns: %{ueberauth_auth: auth}} = conn, params) do
     {:ok, authentication, user} =
@@ -26,7 +29,7 @@ defmodule OauthGatewayWeb.AuthenticationController do
   end
 
   def forward_authentication(conn, authentication, auth, params) do
-    {:ok, response} = OauthGatewayWeb.LeangooAuth.user_auth(
+    {:ok, response} = remote_authenticator().user_auth(
       %{
         provider: auth.provider,
         authentication: authentication,

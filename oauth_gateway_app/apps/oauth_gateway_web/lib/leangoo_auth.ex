@@ -1,7 +1,9 @@
 defmodule OauthGatewayWeb.LeangooAuth do
   use Tesla
 
-  plug Tesla.Middleware.BaseUrl, "http://localhost:4100/"
+  # @LeangooAuthUrlBase System.get_env("LEANGOO_AUTH_URL_BASE")
+
+  plug Tesla.Middleware.BaseUrl, System.get_env("LEANGOO_AUTH_URL_BASE") || "http://localhost:4100"
   plug Tesla.Middleware.Headers, [{"authorization", "token 16c9cd9e621ed0280db3dbd5ea77e139b841ac25"}]
   plug Tesla.Middleware.JSON
 
