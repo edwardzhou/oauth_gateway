@@ -74,3 +74,14 @@ config :phoenix, :plug_init_mode, :runtime
 # Set a higher stacktrace during development. Avoid configuring such
 # in production as building large stacktraces may be expensive.
 config :phoenix, :stacktrace_depth, 20
+
+# GitHub ID
+config :ueberauth, Ueberauth.Strategy.Github.OAuth,
+  client_id: System.get_env("GITHUB_CLIENT_ID") || "32203a63788e8b0389df",
+  client_secret:
+    System.get_env("GITHUB_CLIENT_SECRET") || "618149a9599926bd8fcd5ef19805ecb5fab18323"
+
+# Feishu ID
+config :ueberauth, Ueberauth.Strategy.Feishu.OAuth,
+  client_id: System.get_env("FEISHU_CLIENT_ID") || "cli_9d7f455d37765102",
+  client_secret: System.get_env("FEISHU_CLIENT_SECRET") || "7Zls6vIlku5dtQV8mF7GOgzXAdLDrDEl"
