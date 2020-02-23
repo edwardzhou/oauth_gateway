@@ -20,7 +20,6 @@ defmodule OauthGatewayWeb.Router do
   scope "/", OauthGatewayWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
   end
 
   scope "/auth", OauthGatewayWeb do
