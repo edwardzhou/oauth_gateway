@@ -3,6 +3,8 @@ defmodule OauthGateway.Accounts.Users.Test do
 
   alias OauthGateway.Accounts
 
+  alias OauthGateway.ModelFactory
+
   describe "users" do
     alias OauthGateway.Accounts.User
 
@@ -41,12 +43,10 @@ defmodule OauthGateway.Accounts.Users.Test do
     }
 
     def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Accounts.create_user()
+      user_attrs = attrs
+      |> Enum.into(@valid_attrs)
 
-      user
+      ModelFactory.insert(:user, user_attrs)
     end
 
     test "list_users/0 returns all users" do
