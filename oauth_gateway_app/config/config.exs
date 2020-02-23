@@ -33,6 +33,21 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Ueberauth
+config :ueberauth, Ueberauth,
+  providers: [
+    github: {Ueberauth.Strategy.Github, []},
+    feishu: {Ueberauth.Strategy.Feishu, [callback_url: System.get_env("FEISHU_CALLBACK_URL")]}
+  ],
+  json_library: Jason
+
+# OAuth uses Jason instead of Poison
+config :oauth2,
+  serializers: %{
+    "application/json" => Jason,
+    "application/vnd.api+json" => Jason
+  }
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
