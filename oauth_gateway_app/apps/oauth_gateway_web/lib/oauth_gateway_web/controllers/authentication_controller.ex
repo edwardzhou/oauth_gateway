@@ -12,6 +12,7 @@ defmodule OauthGatewayWeb.AuthenticationController do
       |> Authenticator.authenticate()
 
     conn
+    |> assign(:current_user, user)
     |> forward_authentication(authentication, auth, params)
   end
 
