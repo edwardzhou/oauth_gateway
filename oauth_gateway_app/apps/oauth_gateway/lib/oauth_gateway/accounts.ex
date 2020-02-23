@@ -197,4 +197,18 @@ defmodule OauthGateway.Accounts do
   def change_authentication(%Authentication{} = authentication) do
     Authentication.changeset(authentication, %{})
   end
+
+  def find_authentication("" <> uid) do
+    query =
+      from u in Authentication,
+        where: u.uid == ^uid,
+        limit: 1
+
+    query
+    |> Repo.one()
+    |> wrap_result()
+  end
+
+  def wrap_result(nil), do: {:not_found, nil}
+  def wrap_result(data), do: {:ok, data}
 end
