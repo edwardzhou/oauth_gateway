@@ -13,10 +13,23 @@ defmodule OauthGatewayWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :ueberauth do
+    plug Ueberauth
+  end
+
   scope "/", OauthGatewayWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+  end
+
+  scope "/auth", OauthGatewayWeb do
+    pipe_through [:browser, :ueberauth]
+
+    get "/logout", AuthenticationController, :delete, as: :auth
+    get "/:provider", AuthenticationController, :request, as: :auth
+    get "/:provider/callback", AuthenticationController, :callback, as: :auth
+    post "/:provider/callback", AuthenticationController, :callback, as: :auth
   end
 
   # Other scopes may use custom stacks.

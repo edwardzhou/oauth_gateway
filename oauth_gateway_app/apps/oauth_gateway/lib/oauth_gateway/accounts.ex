@@ -38,6 +38,33 @@ defmodule OauthGateway.Accounts do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Gets an user by email.
+
+  Returns {:ok, user} if email found.
+          {:error, "User not found"} else.
+
+  ## Examples
+
+      iex> get_user_by_email("edwardzhou@gmail.com")
+      {:ok, %User{}}
+
+      iex> get_user_by_email("non_exists@gmail.com")
+      {:error, "User not found"}
+  """
+  def get_user_by_email(email) do
+    case User
+         |> where(email: ^email)
+         |> limit(1)
+         |> Repo.one() do
+      nil ->
+        {:error, "User not found"}
+
+      user ->
+        {:ok, user}
+    end
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples
@@ -196,6 +223,17 @@ defmodule OauthGateway.Accounts do
   """
   def change_authentication(%Authentication{} = authentication) do
     Authentication.changeset(authentication, %{})
+  end
+
+  def find_authentication(union_id: nil), do: {:not_found, nil}
+  def find_authentication(union_id: ""), do: {:not_found, nil}
+
+  def find_authentication(union_id: union_id) do
+    Authentication
+    |> where(union_id: ^union_id)
+    |> limit(1)
+    |> Repo.one()
+    |> wrap_result
   end
 
   def find_authentication("" <> uid) do
